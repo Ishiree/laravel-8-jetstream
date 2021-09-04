@@ -14,6 +14,10 @@ use Laravel\Jetstream\Jetstream;
 
 class JetstreamServiceProvider extends ServiceProvider
 {
+    protected function registerComponent(string $component) {
+        \Illuminate\Support\Facades\Blade::component('jetstream::components.'.$component, 'jet-'.$component);
+    }
+
     /**
      * Register any application services.
      *
@@ -21,7 +25,12 @@ class JetstreamServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->registerComponent('edit-button');
+        
+        // Table Component
+        $this->registerComponent('table');
+        $this->registerComponent('table-column');
+        
     }
 
     /**

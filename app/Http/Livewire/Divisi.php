@@ -8,8 +8,9 @@ use Livewire\Component;
 
 class Divisi extends Component
 {
-    public $nama_divisi, $kode_divisi;
+    public $divisis, $nama_divisi, $kode_divisi, $divisi_id;
     public $modalFormVisible = false;
+    public $no=1;
 
     
     /**
@@ -26,21 +27,24 @@ class Divisi extends Component
     }
     
     /**
-     * Function untuk create data
+     * Function untuk create dan validate data
      *
      * @return void
      */
     public function create()
     {
         $this->validate();
-        ModelsDivisi::create($this->modelData());
+        // ModelsDivisi::create($this->modelData());
+        ModelsDivisi::updateOrCreate(['id' => $this->divisi_id], [
+            'nama_divisi' => $this->nama_divisi,
+            'kode_divisi' => $this->kode_divisi
+        ]);
+        session()->flash('message', 
+        $this->divisi_id ? 'Divisi Updated Successfully.' : 'Divisi Created Successfully.');
+  
+        
         $this->modalFormVisible = false;
         $this->cleanVars();
-    }
-
-    public function read()
-    {
-        return ModelsDivisi::paginate(10);
     }
     
     /**
@@ -75,12 +79,34 @@ class Divisi extends Component
     {
         $this->nama_divisi = null;
         $this->kode_divisi = null;
+        $this->divisi_id = null;
+    }
+    
+    /**
+     * Function untuk edit data
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function edit($id)
+    {
+        $divisi = ModelsDivisi::findOrFail($id);
+        $this->divisi_id = $id;
+        $this->nama_divisi = $divisi->nama_divisi;
+        $this->kode_divisi = $divisi->kode_divisi;
+        
+        $this->modalFormVisible = true;
+    }
+
+    public function delete($id)
+    {
+        ModelsDivisi::find($id)->delete();
+        session()->flash('message', 'Divisi Berhasil Dihapus.');
     }
 
     public function render()
     {
-        return view('livewire.divisi', [
-            'datas' => $this->read(),
-        ]);
+        $this->divisis = ModelsDivisi::all();
+        return view('livewire.divisi');
     }
 }
