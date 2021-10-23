@@ -82,6 +82,8 @@
                     </tr>
                     @endforeach
             </x-jet-table>
+
+            {{ $divisis->links() }}
         </div>
     </div>
 </div>

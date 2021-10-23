@@ -5,10 +5,13 @@ namespace App\Http\Livewire;
 use App\Models\Divisi as ModelsDivisi;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Divisi extends Component
 {
-    public $divisis, $nama_divisi, $kode_divisi, $divisi_id;
+    use WithPagination;
+
+    public  $nama_divisi, $kode_divisi, $divisi_id;
     public $modalFormVisible = false;
     public $no=1;
 
@@ -106,7 +109,10 @@ class Divisi extends Component
 
     public function render()
     {
-        $this->divisis = ModelsDivisi::all();
-        return view('livewire.divisi');
+    
+        $divisis = ModelsDivisi::all();
+        return view('livewire.divisi', [
+            'divisis' => ModelsDivisi::paginate(8),
+        ]);
     }
 }
